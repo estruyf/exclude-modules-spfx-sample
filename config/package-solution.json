@@ -1,0 +1,12 @@
+{
+  "$schema": "https://dev.office.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "exclude-optional-modules-client-side-solution",
+    "id": "aa7c3d52-8cc6-4de4-8aa7-ad03173b9398",
+    "version": "1.0.0.0",
+    "skipFeatureDeployment": true
+  },
+  "paths": {
+    "zippedPackage": "solution/exclude-optional-modules.sppkg"
+  }
+}

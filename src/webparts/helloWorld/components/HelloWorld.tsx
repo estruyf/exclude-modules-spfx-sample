@@ -1,0 +1,66 @@
+import * as React from 'react';
+import styles from './HelloWorld.module.scss';
+import { IHelloWorldProps } from './IHelloWorldProps';
+import { escape } from '@microsoft/sp-lodash-subset';
+import { Environment, EnvironmentType } from '@microsoft/sp-core-library';
+import Production from '../../../services/production';
+
+// Include the development service, required for type safety
+import * as Dev from "../../../services/development";
+
+
+export interface IHelloWorldState {
+  items: string[];
+}
+
+export default class HelloWorld extends React.Component<IHelloWorldProps, IHelloWorldState> {
+
+  constructor(props: IHelloWorldProps) {
+    super(props);
+
+    this.state = { items: [] };
+  }
+
+  public componentDidMount() {
+    if (Environment.type === EnvironmentType.SharePoint ||
+      Environment.type === EnvironmentType.ClassicSharePoint) {
+        Production.get().then((data: string[]) => {
+          this.setState({
+            items: data
+          });
+        });
+      }
+
+      // The following block will be removed from production bundles
+      if (DEBUG) {
+        if (Environment.type === EnvironmentType.Local ||
+          Environment.type === EnvironmentType.Test) {
+            // Load the required development service module
+            // Use typeof Dev to maintain type safety
+            const Development: typeof Dev = require("../../../services/development");
+            Development.default.get().then((data: string[]) => {
+              this.setState({
+                items: data
+              });
+            });
+          }
+        }
+      }
+
+      public render(): React.ReactElement<IHelloWorldProps> {
+        return (
+          <div className={styles.helloWorld}>
+          {
+            this.state.items.length === 0 ? <p>Loading items ...</p> : ''
+          }
+          <ul>
+          {
+            this.state.items.map((item, index) => {
+              return <li key={index}>{item}</li>;
+            })
+          }
+          </ul>
+          </div>
+        );
+      }
+    }

@@ -5,8 +5,16 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import { Environment, EnvironmentType } from '@microsoft/sp-core-library';
 import Production from '../../../services/production';
 
+/* Solution 1 */
 // Include the development service, required for type safety
-import * as Dev from "../../../services/development";
+// import * as Dev from "../../../services/development";
+
+
+/* Solution 2 */
+let Development: typeof Production = null;
+if (DEBUG) {
+  Development = require('../../../services/development');
+}
 
 
 export interface IHelloWorldState {
@@ -31,14 +39,30 @@ export default class HelloWorld extends React.Component<IHelloWorldProps, IHello
         });
       }
 
+      /* Solution 1 */
       // The following block will be removed from production bundles
+      // if (DEBUG) {
+      //   if (Environment.type === EnvironmentType.Local ||
+      //     Environment.type === EnvironmentType.Test) {
+      //       // Load the required development service module
+      //       // Use typeof Dev to maintain type safety
+      //       const Development: typeof Dev = require("../../../services/development");
+      //       Development.default.get().then((data: string[]) => {
+      //         this.setState({
+      //           items: data
+      //         });
+      //       });
+      //     }
+      //   }
+
+      /* Solution 2 */
+      // Still best to wrap this code in a DEBUG statement, as the code will also get removed from the production bundle
       if (DEBUG) {
         if (Environment.type === EnvironmentType.Local ||
-          Environment.type === EnvironmentType.Test) {
+            Environment.type === EnvironmentType.Test) {
             // Load the required development service module
             // Use typeof Dev to maintain type safety
-            const Development: typeof Dev = require("../../../services/development");
-            Development.default.get().then((data: string[]) => {
+            Development.get().then((data: string[]) => {
               this.setState({
                 items: data
               });

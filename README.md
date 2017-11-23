@@ -36,7 +36,7 @@ Check out the HTML bundle stats file which is located in: `./temp/stats`. In the
 ![Before](./assets/after.png)
 
 
-## Solution
+## Solution 1
 
 The solution works as follows:
 
@@ -56,6 +56,36 @@ if (DEBUG) {
       // Use typeof Dev to maintain type safety
       const Development: typeof Dev = require("../../../services/development");
       Development.default.get().then((data: string[]) => {
+        this.setState({
+          items: data
+        });
+      });
+    }
+  }
+}
+```
+
+## Solution 2
+
+Solution 2 is not so different as the first one. In this case the `require` method is moved to the top of the file:
+
+```TypeScript
+let Development: typeof Production = null;
+if (DEBUG) {
+  Development = require('../../../services/development');
+}
+```
+
+The service call can be implemented as follows:
+
+```TypeScript
+// Still best to wrap this code in a DEBUG statement, as the code will also get removed from the production bundle
+if (DEBUG) {
+  if (Environment.type === EnvironmentType.Local ||
+      Environment.type === EnvironmentType.Test) {
+      // Load the required development service module
+      // Use typeof Dev to maintain type safety
+      Development.get().then((data: string[]) => {
         this.setState({
           items: data
         });

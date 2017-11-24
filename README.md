@@ -70,7 +70,9 @@ if (DEBUG) {
 Solution 2 is not so different as the first one. In this case the `require` method is moved to the top of the file:
 
 ```TypeScript
-let Development: typeof Production = null;
+// You will need the next two lines in order to get type safety
+import * as Dev from "../../../services/development";
+let Development: typeof Dev.default = null;
 if (DEBUG) {
   Development = require('../../../services/development');
 }

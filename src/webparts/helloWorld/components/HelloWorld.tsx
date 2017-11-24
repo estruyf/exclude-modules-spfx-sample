@@ -5,13 +5,17 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import { Environment, EnvironmentType } from '@microsoft/sp-core-library';
 import Production from '../../../services/production';
 
+// Default
+// import Development from "../../../services/development";
+
 /* Solution 1 */
 // Include the development service, required for type safety
 // import * as Dev from "../../../services/development";
 
 
 /* Solution 2 */
-let Development: typeof Production = null;
+import * as Dev from "../../../services/development";
+let Development: typeof Dev.default = null;
 if (DEBUG) {
   Development = require('../../../services/development');
 }
